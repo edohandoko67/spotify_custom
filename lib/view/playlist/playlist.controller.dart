@@ -10,20 +10,78 @@ import '../../data/auth/model/track.dart';
 
 class PlayListController extends GetxController {
   AuthService service = AuthService();
-  RxBool isSuccess = true.obs;
+  RxBool isSuccess = false.obs;
   var isOpening = false.obs; // Menyimpan status apakah URL sedang dibuka
   //RxString spotifyUrl = 'https://open.spotify.com/track/5It44CCAJpMBShYw1swvql'.obs;  // URL Spotify yang diterima
   // Declare an RxString to store the Spotify URL
   RxString spotifyUrl = RxString('');
-
+  final player = AudioPlayer();
+  Rx<Duration> currentPosition = Duration.zero.obs;  // Reactive variable to track the current position
 
 
   @override
   void onInit() {
     super.onInit();
-    listSongData();
-    playListSongData();
+    listSongData();  // Presumably loads song data, ensure it's implemented
+    playListSongData();  // Presumably loads playlist data, ensure it's implemented
 
+    // Set initial audio URL for playback
+    _setInitialAudioUrl();
+
+    // Listen to the position stream of the audio player and update currentPosition
+    player.positionStream.listen((event) {
+      currentPosition.value = event;  // Update the reactive variable
+    });
+  }
+
+// Set the initial URL for playback (replace with your dynamic URL)
+  Future<void> _setInitialAudioUrl() async {
+    try {
+      // Example direct MP3 URL, replace with valid URL
+      await player.setUrl('https://p.scdn.co/mp3-preview/2f37da1d4221f40b9d1a98cd191f4d6f1646ad17');
+      player.play();  // Automatically play the audio after loading
+    } catch (e) {
+      print("Error loading audio: $e");
+    }
+  }
+
+// Play an audio file (called when user clicks play for another track)
+  Future<void> playAudio(String url) async {
+    try {
+      await player.setUrl(url);  // Set the audio URL dynamically
+      player.play();  // Start playing the audio
+    } catch (e) {
+      print("Error playing audio: $e");
+    }
+  }
+
+// Handle play/pause functionality
+  void handlePlayPause() {
+    if (player.playing) {
+      player.pause();  // Pause the player
+    } else {
+      player.play();  // Play the player
+    }
+    isSuccess.value = !isSuccess.value;  // Toggle the play/pause state
+  }
+
+// Seek the audio to a specific position
+  void handleSeek(double value) {
+    player.seek(Duration(seconds: value.toInt()));
+  }
+
+// Format duration into MM:SS format
+  String formattedDuration(Duration d) {
+    final minutes = d.inMinutes.remainder(60);
+    final seconds = d.inSeconds.remainder(60);
+    return "${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
+  }
+
+// Dispose of the player when the controller is closed
+  @override
+  void onClose() {
+    player.dispose();
+    super.onClose();
   }
 
 

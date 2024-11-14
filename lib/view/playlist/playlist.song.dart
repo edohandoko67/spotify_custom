@@ -89,7 +89,8 @@ class PlayList extends GetView<PlayListController> {
                         ),
                         Obx(() => IconButton(
                           onPressed: () {
-                            controller.isSuccess.value = !controller.isSuccess.value;
+                           // controller.isSuccess.value = !controller.isSuccess.value;
+                            controller.handlePlayPause();
                           },
                           icon: AnimatedSwitcher(
                             duration: const Duration(milliseconds: 300), // Transition duration
