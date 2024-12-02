@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:spotify/data/auth/service/api.constant.dart';
 import 'package:spotify/view/home/controller.dart';
 import 'package:spotify/view/playlist/playlist.controller.dart';
 
@@ -40,7 +39,7 @@ class PlayList extends GetView<PlayListController> {
                             children: [
                               Text(
                                 homeController.artistList.value.name ?? 'No Name',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 50,
                                   fontWeight: FontWeight.bold,
@@ -49,7 +48,7 @@ class PlayList extends GetView<PlayListController> {
                               const SizedBox(height: 15),
                               Text(
                                 '${homeController.artistList.value.followers?.total?.toString() ?? '0'} followers',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
